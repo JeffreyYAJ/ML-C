@@ -1,0 +1,26 @@
+# Doxyfile.in — minimal Doxygen configuration for YAJ-ML.
+# Generate docs with: doxygen docs/Doxyfile.in
+
+PROJECT_NAME           = "YAJ-ML"
+PROJECT_NUMBER         = 0.1.0
+OUTPUT_DIRECTORY       = docs
+CREATE_SUBDIRS         = NO
+
+INPUT                  = include/yaj_ml
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h
+
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = NO
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+OPTIMIZE_OUTPUT_FOR_C  = YES
+MARKDOWN_SUPPORT       = YES
+
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES

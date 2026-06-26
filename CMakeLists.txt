@@ -25,6 +25,8 @@ target_include_directories(yaj_ml
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
+target_link_libraries(yaj_ml PUBLIC m)
+
 yaj_ml_set_compiler_warnings(yaj_ml)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

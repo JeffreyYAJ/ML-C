@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/test_runner.dir/test_main.c.o CMakeFiles/test_runner.dir/test_error.c.o CMakeFiles/test_runner.dir/test_vector.c.o CMakeFiles/test_runner.dir/test_matrix.c.o -o test_runner  ../libyaj_ml.a -lm 

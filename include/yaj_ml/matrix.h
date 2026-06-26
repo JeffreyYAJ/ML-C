@@ -133,6 +133,6 @@ yaj_ml_status_t mat_vec_mul(const yaj_ml_mat_t *mat, const yaj_ml_vec_t *vec,
  *
  * @complexity O(m * n)
  */
-yaj_ml_status_t mat_add_col(const yaj_ml_mat_t *src, yaj_ml_mat_t *out);
+yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out);
 
 #endif /* YAJ_ML_MATRIX_H */

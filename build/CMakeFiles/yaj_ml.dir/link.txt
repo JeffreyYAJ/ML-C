@@ -1,0 +1,2 @@
+/usr/bin/ar qc libyaj_ml.a CMakeFiles/yaj_ml.dir/src/error.c.o CMakeFiles/yaj_ml.dir/src/vector.c.o CMakeFiles/yaj_ml.dir/src/matrix.c.o
+/usr/bin/ranlib libyaj_ml.a
