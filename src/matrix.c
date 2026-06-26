@@ -217,7 +217,7 @@ yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out)
     }
 
     if (out->data != NULL) {
-        mat_free(out);
+        return YAJ_ML_ERR_INVALID_ARG;
     }
 
     status = mat_create(src->rows, src->cols + 1, out);

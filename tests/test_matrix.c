@@ -118,7 +118,7 @@ TEST(mat_vec_mul)
 TEST(mat_add_row)
 {
     yaj_ml_mat_t src;
-    yaj_ml_mat_t out;
+    yaj_ml_mat_t out = {0};
     double value;
 
     ASSERT_STATUS_OK(mat_create(2, 2, &src));

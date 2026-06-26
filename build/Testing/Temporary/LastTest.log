@@ -1,10 +1,10 @@
-Start testing: Jun 26 20:56 WAT
+Start testing: Jun 26 20:57 WAT
 ----------------------------------------------------------
 1/1 Testing: unit_tests
 1/1 Test: unit_tests
 Command: "/home/yaj/Desktop/ML-C/build/tests/test_runner"
 Directory: /home/yaj/Desktop/ML-C/build/tests
-"unit_tests" start time: Jun 26 20:56 WAT
+"unit_tests" start time: Jun 26 20:57 WAT
 Output:
 ----------------------------------------------------------
 Running 18 tests...
@@ -26,16 +26,15 @@ Running 18 tests...
   mat_mul ... ok
   mat_transpose ... ok
   mat_vec_mul ... ok
-  mat_add_row ...   FAIL: /home/yaj/Desktop/ML-C/tests/test_matrix.c:130: expected YAJ_ML_OK, got dimension mismatch
-ok
+  mat_add_row ... ok
 
 18 tests passed
 <end of output>
-Test time =   0.00 sec
+Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"unit_tests" end time: Jun 26 20:56 WAT
+"unit_tests" end time: Jun 26 20:57 WAT
 "unit_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Jun 26 20:56 WAT
+End testing: Jun 26 20:57 WAT
