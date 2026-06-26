@@ -216,16 +216,13 @@ yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out)
         return YAJ_ML_ERR_INVALID_ARG;
     }
 
-    if (out->data != NULL &&
-        (out->rows != src->rows || out->cols != src->cols + 1)) {
-        return YAJ_ML_ERR_DIM;
+    if (out->data != NULL) {
+        mat_free(out);
     }
 
-    if (out->data == NULL) {
-        status = mat_create(src->rows, src->cols + 1, out);
-        if (status != YAJ_ML_OK) {
-            return status;
-        }
+    status = mat_create(src->rows, src->cols + 1, out);
+    if (status != YAJ_ML_OK) {
+        return status;
     }
 
     for (i = 0; i < src->rows; ++i) {

@@ -128,7 +128,7 @@ yaj_ml_status_t mat_vec_mul(const yaj_ml_mat_t *mat, const yaj_ml_vec_t *vec,
  * the intercept into a single matrix multiply.
  *
  * @param src Input matrix (m x n). Must not be NULL.
- * @param out Output matrix (m x (n + 1)). Caller owns storage; free with mat_free.
+ * @param out Output matrix (m x (n + 1)). Allocated by this function; free with mat_free.
  * @return YAJ_ML_OK on success, or an error code on failure.
  *
  * @complexity O(m * n)
