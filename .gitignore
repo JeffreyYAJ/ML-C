@@ -1,3 +1,11 @@
+# Build artifacts
 build/
 build-make/
 docs/html/
+
+# Editor / OS
+*.swp
+*~
+.DS_Store
+.vscode/
+.idea/

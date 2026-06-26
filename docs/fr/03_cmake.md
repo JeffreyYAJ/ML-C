@@ -1,15 +1,28 @@
-# 03 — Comprendre CMake (dans YAJ-ML)
+# CMake expliqué pour débutants
 
-CMake est un **générateur de build**, pas un compilateur. Il ne compile pas directement : il **écrit** des Makefiles (ou des fichiers Ninja) que tu exécutes ensuite.
+**CMake** est un outil qui **génère** des fichiers de build (Makefiles, projets IDE, etc.) à partir d'une description portable du projet. Tu n'écris pas directement les règles de compilation — tu décris *quoi* construire, et CMake produit *comment*.
+
+## Pourquoi CMake existe
+
+Imagine que ton projet doit compiler sur Linux (Make), Windows (Visual Studio) et macOS (Xcode). Écrire trois systèmes de build différents est pénible. CMake résout ça :
 
 ```
-CMakeLists.txt  ──(cmake)──►  build/Makefile  ──(make/cmake --build)──►  binaires
-   (recette)                    (recette générée)                        (résultat)
+CMakeLists.txt  ──►  cmake  ──►  Makefile (ou Ninja, ou .sln)
+                                      │
+                                      ▼
+                                 binaires compilés
 ```
 
-Si le Makefile te semble plus clair, c'est normal : CMake ajoute une couche d'abstraction. Mais c'est le standard dans l'industrie C/C++.
+Pour YAJ-ML, CMake génère un Makefile dans le dossier `build/`.
 
-## Les 3 commandes essentielles
+## Prérequis
+
+```bash
+cmake --version   # minimum 3.16
+gcc --version
+```
+
+## Les 3 commandes à retenir
 
 ```bash
 # 1. Configurer (une fois, ou quand CMakeLists.txt change)
@@ -22,11 +35,24 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-| Flag | Signification |
-|------|---------------|
-| `-S .` | **S**ource : répertoire contenant CMakeLists.txt (racine du projet) |
-| `-B build` | **B**uild : répertoire où CMake écrit ses fichiers générés |
-| `-DCMAKE_BUILD_TYPE=Debug` | mode debug (-g -O0) |
+| Option | Signification |
+|--------|---------------|
+| `-S .` | **S**ource : racine du projet (où est CMakeLists.txt) |
+| `-B build` | **B**uild : dossier de sortie (créé automatiquement) |
+| `-DCMAKE_BUILD_TYPE=Debug` | Mode debug (-g -O0) ou Release (-O2) |
+
+## Structure des fichiers CMake dans YAJ-ML
+
+```
+ML-C/
+├── CMakeLists.txt              ← racine du projet
+├── cmake/
+│   └── CompilerWarnings.cmake  ← module réutilisable
+├── models/
+│   └── CMakeLists.txt          ← sous-projet (stubs)
+└── tests/
+    └── CMakeLists.txt          ← sous-projet (tests)
+```
 
 ## CMakeLists.txt racine — ligne par ligne
 
@@ -47,20 +73,20 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 ```
-Force le standard **ISO C17** (pas de GNU extensions).
+Force le standard **C17** sans extensions GNU.
 
 ```cmake
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 ```
-Si tu oublies de préciser Debug/Release, CMake choisit Debug par défaut.
+Si tu oublies `-DCMAKE_BUILD_TYPE`, CMake choisit Debug par défaut.
 
 ```cmake
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerWarnings)
 ```
-Charge notre module custom qui active `-Wall -Wextra -Wpedantic`.
+Ajoute le dossier `cmake/` au chemin de recherche, puis charge notre module de warnings.
 
 ```cmake
 add_library(yaj_ml STATIC
@@ -69,26 +95,59 @@ add_library(yaj_ml STATIC
     src/matrix.c
 )
 ```
-Crée une **bibliothèque statique** `libyaj_ml.a` à partir des 3 fichiers source.
+Crée une **bibliothèque statique** nommée `yaj_ml` à partir de ces sources.
 
 ```cmake
-target_include_directories(yaj_ml PUBLIC include)
+target_include_directories(yaj_ml
+    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
 ```
-Quand tu `#include "yaj_ml/vector.h"`, le compilateur cherche dans `include/`.
+Les cibles qui lient `yaj_ml` héritent automatiquement du chemin `include/`.
 
 ```cmake
 target_link_libraries(yaj_ml PUBLIC m)
 ```
-Lie la bibliothèque math (`libm`) — nécessaire pour `sqrt()` dans `vec_norm_l2`.
+Lie `libm` (math). `PUBLIC` propage aussi aux consommateurs de `yaj_ml`.
+
+```cmake
+yaj_ml_set_compiler_warnings(yaj_ml)
+```
+Applique `-Wall -Wextra -Wpedantic` (défini dans `cmake/CompilerWarnings.cmake`).
+
+```cmake
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(yaj_ml PRIVATE -g -O0)
+else()
+    target_compile_options(yaj_ml PRIVATE -O2)
+endif()
+```
+Flags de compilation selon le mode.
 
 ```cmake
 add_subdirectory(models)
 enable_testing()
 add_subdirectory(tests)
 ```
-- `models/` : sous-répertoires pour les futurs modèles ML (stubs pour l'instant)
-- `enable_testing()` : active CTest
-- `tests/` : construit `test_runner` et l'enregistre comme test
+Descend dans les sous-dossiers `models/` et `tests/`, active CTest.
+
+## Le module CompilerWarnings
+
+Fichier : [`cmake/CompilerWarnings.cmake`](../../cmake/CompilerWarnings.cmake)
+
+```cmake
+function(yaj_ml_set_compiler_warnings target)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    else()
+        target_compile_options(${target} PRIVATE
+            -Wall -Wextra -Wpedantic -Wshadow
+            -Wconversion -Wdouble-promotion
+        )
+    endif()
+endfunction()
+```
+
+C'est une **fonction CMake** réutilisable. Au lieu de répéter les flags partout, on appelle `yaj_ml_set_compiler_warnings(mon_target)`.
 
 ## tests/CMakeLists.txt
 
@@ -96,60 +155,91 @@ add_subdirectory(tests)
 add_executable(test_runner
     test_main.c test_error.c test_vector.c test_matrix.c
 )
-target_link_libraries(test_runner PRIVATE yaj_ml)
+target_link_libraries(test_runner PRIVATE yaj_ml m)
+target_include_directories(test_runner PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+
 add_test(NAME unit_tests COMMAND test_runner)
 ```
 
-- `add_executable` : crée un programme (pas une bibliothèque)
-- `target_link_libraries(... yaj_ml)` : lie contre `libyaj_ml.a`
-- `add_test` : enregistre le test pour `ctest`
+| Ligne | Rôle |
+|-------|------|
+| `add_executable` | Crée le binaire `test_runner` |
+| `target_link_libraries` | Lie la bibliothèque core + libm |
+| `add_test` | Enregistre le test pour `ctest` |
 
-## cmake/CompilerWarnings.cmake
+## Flux complet CMake
+
+```mermaid
+flowchart LR
+    A[CMakeLists.txt] --> B[cmake configure]
+    B --> C[build/Makefile]
+    C --> D[cmake --build]
+    D --> E[libyaj_ml.a]
+    D --> F[test_runner]
+    F --> G[ctest]
+```
+
+## Concepts clés
+
+### Cible (target)
+
+Tout ce que CMake construit est une **cible** : bibliothèque, exécutable, test. Exemples : `yaj_ml`, `test_runner`.
+
+### PUBLIC vs PRIVATE
 
 ```cmake
-function(yaj_ml_set_compiler_warnings target)
-    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic ...)
-endfunction()
+target_include_directories(yaj_ml PUBLIC include/)
+target_compile_options(yaj_ml PRIVATE -O2)
 ```
 
-Une **fonction réutilisable** : on l'appelle sur chaque cible (`yaj_ml`, `test_runner`) pour activer les mêmes warnings partout.
+| Visibilité | Signification |
+|------------|---------------|
+| `PUBLIC` | S'applique à cette cible ET à ceux qui la lient |
+| `PRIVATE` | S'applique seulement à cette cible |
+| `INTERFACE` | S'applique seulement aux consommateurs, pas à la cible |
 
-## Ce que CMake génère dans `build/`
+### add_subdirectory
 
+Quand CMake rencontre `add_subdirectory(tests)`, il exécute `tests/CMakeLists.txt` dans un scope enfant. Les cibles créées là restent visibles au niveau parent.
+
+## CMake vs Makefile dans YAJ-ML
+
+| | Makefile | CMake |
+|---|----------|-------|
+| Fichier principal | `Makefile` | `CMakeLists.txt` |
+| Dossier de build | `build-make/` | `build/` |
+| Commande compile | `make` | `cmake --build build` |
+| Commande test | `make test` | `ctest --test-dir build` |
+| Fichiers générés | Aucun | Makefile, cache, etc. dans `build/` |
+
+Les deux produisent **exactement le même code**. Utilise celui que tu préfères.
+
+## Quand modifier quoi
+
+| Tu veux... | Fichier à modifier |
+|------------|-------------------|
+| Ajouter un `.c` au core | `CMakeLists.txt` racine (`add_library`) + `Makefile` (`LIB_SRCS`) |
+| Ajouter un test | `tests/CMakeLists.txt` + `Makefile` (`TEST_SRCS`) |
+| Changer les warnings | `cmake/CompilerWarnings.cmake` + `Makefile` (`CFLAGS`) |
+| Ajouter un modèle ML | `models/<nom>/CMakeLists.txt` + `models/CMakeLists.txt` |
+
+## Dépannage
+
+```bash
+# Reconfigurer from scratch
+rm -rf build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+
+# Voir les variables CMake
+cmake -S . -B build -LAH | grep CMAKE_C
+
+# Compiler en verbose (voir les commandes gcc)
+cmake --build build --verbose
 ```
-build/
-├── CMakeCache.txt          ← options mémorisées
-├── Makefile                ← Makefile généré (tu peux l'ignorer)
-├── libyaj_ml.a             ← bibliothèque
-└── tests/
-    └── test_runner         ← exécutable de tests
-```
 
-**Ne modifie jamais** les fichiers dans `build/` à la main. Modifie `CMakeLists.txt` à la racine, puis relance `cmake -S . -B build`.
+## Pour aller plus loin
 
-## Correspondance CMake ↔ Makefile
-
-| Concept | Makefile | CMake |
-|---------|----------|-------|
-| Compilateur | `CC := gcc` | détecté automatiquement |
-| Flags | `CFLAGS := ...` | `target_compile_options(...)` |
-| Bibliothèque | `ar rcs libyaj_ml.a ...` | `add_library(yaj_ml STATIC ...)` |
-| Exécutable | `gcc -o test_runner ...` | `add_executable(test_runner ...)` |
-| Include path | `-Iinclude` | `target_include_directories(...)` |
-| Lier libm | `LDFLAGS := -lm` | `target_link_libraries(... m)` |
-| Tests | `make test` | `ctest --test-dir build` |
-
-## Quand CMake devient utile
-
-Pour l'instant le projet est petit. CMake devient indispensable quand :
-- tu ajoutes 5 modèles ML avec leurs propres bibliothèques
-- tu veux supporter Windows (Visual Studio) et Linux
-- tu ajoutes des options (`-DYAJ_ML_ENABLE_BENCHMARKS=ON`)
-- tu intègres CI/CD (GitHub Actions)
-
-## Workflow recommandé pour apprendre
-
-1. Lis le [Makefile](02_makefile.md) et compile avec `make test`
-2. Lis ce document
-3. Compile avec CMake et compare les deux dossiers de sortie
-4. Modifie un `.c`, recompile avec les deux : observe la recompilation incrémentale
+- [Documentation officielle CMake](https://cmake.org/documentation/)
+- Tutoriel : « CMake Tutorial » sur cmake.org
+- Quand YAJ-ML aura plusieurs modèles, chaque `models/foo/CMakeLists.txt` fera un `add_library(yaj_ml_foo ...)` qui lie `yaj_ml`

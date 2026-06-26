@@ -103,7 +103,7 @@ yaj_ml_status_t vec_scale(double alpha, yaj_ml_vec_t *v);
 /**
  * @brief Compute the Euclidean (L2) norm of a vector.
  *
- * Uses a stable accumulation to reduce precision loss on large vectors.
+ * Computes sqrt(sum(v[i]^2)). See docs/fr/04_core_math.md for the formula.
  *
  * @param v Input vector. Must not be NULL.
  * @param out Output norm. Caller owns the storage.

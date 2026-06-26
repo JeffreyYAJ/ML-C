@@ -17,11 +17,25 @@ Future versions may add Decision Trees, Random Forests, Naive Bayes, PCA, and K-
 ## Requirements
 
 - C17-compatible compiler (GCC, Clang)
-- CMake 3.16 or later
+- `make` (recommended) or CMake 3.16+
 
 No BLAS, LAPACK, OpenCV, Eigen, GSL, or other numerical dependencies.
 
 ## Build
+
+### Option 1 : Makefile (recommended for beginners)
+
+```bash
+make          # compile in debug mode + run tests
+make release  # optimized build (-O2)
+make test     # compile then run tests
+make clean    # remove build-make/
+make help     # show available targets
+```
+
+Output goes to `build-make/` (library: `build-make/lib/libyaj_ml.a`, tests: `build-make/bin/test_runner`).
+
+### Option 2 : CMake
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
@@ -35,7 +49,17 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
+Output goes to `build/`.
+
 ## Run Tests
+
+**With Makefile:**
+
+```bash
+make test
+```
+
+**With CMake:**
 
 ```bash
 ctest --test-dir build --output-on-failure
@@ -44,7 +68,8 @@ ctest --test-dir build --output-on-failure
 Or run the test runner directly:
 
 ```bash
-./build/tests/test_runner
+./build-make/bin/test_runner    # Makefile
+./build/tests/test_runner       # CMake
 ```
 
 ## Project Layout
@@ -56,7 +81,9 @@ models/           One directory per ML algorithm (stubs for now)
 tests/            Unit tests with a zero-dependency custom harness
 examples/         Runnable examples (future)
 benchmark/        Performance benchmarks (future)
-docs/             Doxygen configuration
+docs/             Doxygen configuration + French guides
+Makefile          Simple build (recommended to start)
+CMakeLists.txt    CMake build (for larger projects / CI)
 ```
 
 ## Model API Convention
@@ -75,7 +102,22 @@ See [`include/yaj_ml/model_api.h`](include/yaj_ml/model_api.h) for ownership rul
 
 ## Documentation
 
-Generate API reference with Doxygen (optional):
+### French guides (recommended for learning)
+
+Step-by-step documentation explaining architecture, Makefile, CMake, algorithms, and the tech stack:
+
+| Guide | Topic |
+|-------|-------|
+| [docs/fr/README.md](docs/fr/README.md) | Index and quick start |
+| [docs/fr/01_architecture.md](docs/fr/01_architecture.md) | Project structure and layers |
+| [docs/fr/02_makefile.md](docs/fr/02_makefile.md) | Makefile explained line by line |
+| [docs/fr/03_cmake.md](docs/fr/03_cmake.md) | CMake for beginners |
+| [docs/fr/04_core_math.md](docs/fr/04_core_math.md) | Vector/matrix algorithms and formulas |
+| [docs/fr/05_stack.md](docs/fr/05_stack.md) | Full tech stack overview |
+
+### API reference (Doxygen)
+
+Public headers in `include/yaj_ml/` contain Doxygen comments on every function. Generate HTML reference:
 
 ```bash
 doxygen docs/Doxyfile.in

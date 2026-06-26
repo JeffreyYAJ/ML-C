@@ -1,8 +1,17 @@
+/**
+ * @file matrix.c
+ * @brief Dense matrix operations for YAJ-ML.
+ *
+ * Matrices are stored in row-major order: element (row, col) lives at
+ * data[row * cols + col]. See docs/fr/04_core_math.md for formulas.
+ */
+
 #include "yaj_ml/matrix.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+/* Row-major linear index: A[row,col] -> data[row * cols + col]. */
 static size_t mat_index(size_t row, size_t cols, size_t col)
 {
     return row * cols + col;
@@ -127,6 +136,11 @@ yaj_ml_status_t mat_mul(const yaj_ml_mat_t *a, const yaj_ml_mat_t *b,
         return YAJ_ML_ERR_DIM;
     }
 
+    /*
+     * Naive matrix multiplication: C = A * B.
+     * C[i,j] = sum_k A[i,k] * B[k,j].
+     * Complexity O(m*n*k). Correct first; blocked/SIMD variants may follow.
+     */
     for (i = 0; i < a->rows; ++i) {
         for (j = 0; j < b->cols; ++j) {
             sum = 0.0;
@@ -158,6 +172,7 @@ yaj_ml_status_t mat_transpose(const yaj_ml_mat_t *a, yaj_ml_mat_t *out)
         return YAJ_ML_ERR_DIM;
     }
 
+    /* Transpose: out[j,i] = a[i,j]. Swaps rows and columns. */
     for (i = 0; i < a->rows; ++i) {
         for (j = 0; j < a->cols; ++j) {
             out->data[mat_index(j, out->cols, i)] =
@@ -191,6 +206,11 @@ yaj_ml_status_t mat_vec_mul(const yaj_ml_mat_t *mat, const yaj_ml_vec_t *vec,
         return YAJ_ML_ERR_DIM;
     }
 
+    /*
+     * Matrix-vector product: y = A * x.
+     * y[i] = sum_j A[i,j] * x[j] — dot product of row i with x.
+     * Core operation for prediction y_hat = X * w in linear models.
+     */
     for (i = 0; i < mat->rows; ++i) {
         sum = 0.0;
         for (j = 0; j < mat->cols; ++j) {
@@ -225,6 +245,11 @@ yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out)
         return status;
     }
 
+    /*
+     * Augment X with a bias column of ones so that y = X_aug * [w; b]
+     * replaces y = X*w + b with a single matrix-vector multiply.
+     * Output shape: (m x (n+1)) where the last column is always 1.0.
+     */
     for (i = 0; i < src->rows; ++i) {
         for (j = 0; j < src->cols; ++j) {
             out->data[mat_index(i, out->cols, j)] =

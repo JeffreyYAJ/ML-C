@@ -1,3 +1,10 @@
+/**
+ * @file vector.c
+ * @brief Dense vector operations for YAJ-ML.
+ *
+ * Algorithm reference: docs/fr/04_core_math.md
+ */
+
 #include "yaj_ml/vector.h"
 
 #include <math.h>
@@ -75,6 +82,10 @@ yaj_ml_status_t vec_dot(const yaj_ml_vec_t *a, const yaj_ml_vec_t *b, double *ou
         return YAJ_ML_ERR_DIM;
     }
 
+    /*
+     * Dot product: a·b = sum(a[i] * b[i]).
+     * Used by linear models for the score w·x before applying a link function.
+     */
     sum = 0.0;
     for (i = 0; i < a->n; ++i) {
         sum += a->data[i] * b->data[i];
@@ -101,6 +112,7 @@ yaj_ml_status_t vec_add(const yaj_ml_vec_t *a, const yaj_ml_vec_t *b,
         return YAJ_ML_ERR_DIM;
     }
 
+    /* Element-wise addition: out[i] = a[i] + b[i]. */
     for (i = 0; i < a->n; ++i) {
         out->data[i] = a->data[i] + b->data[i];
     }
@@ -125,6 +137,7 @@ yaj_ml_status_t vec_sub(const yaj_ml_vec_t *a, const yaj_ml_vec_t *b,
         return YAJ_ML_ERR_DIM;
     }
 
+    /* Element-wise subtraction: out[i] = a[i] - b[i]. */
     for (i = 0; i < a->n; ++i) {
         out->data[i] = a->data[i] - b->data[i];
     }
@@ -144,6 +157,7 @@ yaj_ml_status_t vec_scale(double alpha, yaj_ml_vec_t *v)
         return YAJ_ML_ERR_INVALID_ARG;
     }
 
+    /* In-place scaling: v[i] *= alpha (e.g. weight update with learning rate). */
     for (i = 0; i < v->n; ++i) {
         v->data[i] *= alpha;
     }
@@ -164,7 +178,11 @@ yaj_ml_status_t vec_norm_l2(const yaj_ml_vec_t *v, double *out)
         return YAJ_ML_ERR_INVALID_ARG;
     }
 
-    /* Sum of squares is sufficient for L2 norm of moderate-sized vectors. */
+    /*
+     * L2 norm: ||v|| = sqrt(sum(v[i]^2)).
+     * Two-pass stable form is unnecessary here; one pass over moderate vectors
+     * is sufficient. Used for Euclidean distance in KNN and L2 regularization.
+     */
     sum_sq = 0.0;
     for (i = 0; i < v->n; ++i) {
         sum_sq += v->data[i] * v->data[i];

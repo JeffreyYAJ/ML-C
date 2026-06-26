@@ -1,29 +1,28 @@
 # Documentation YAJ-ML (français)
 
-Bienvenue ! Cette documentation est conçue pour **apprendre en lisant** : l'architecture du projet, les outils de build (Makefile et CMake), et les algorithmes implémentés dans le code core.
+Bienvenue dans la documentation pédagogique de **YAJ-ML**. Ces guides expliquent l'architecture du projet, les outils de compilation, la stack technique et les algorithmes implémentés dans le code — le tout pensé pour apprendre en lisant.
 
 ## Par où commencer ?
 
 | Ordre | Document | Contenu |
 |-------|----------|---------|
-| 1 | [01_architecture.md](01_architecture.md) | Stack technique, arborescence, flux de compilation |
-| 2 | [02_makefile.md](02_makefile.md) | Comment fonctionne le Makefile (recommandé si tu débutes) |
-| 3 | [03_cmake.md](03_cmake.md) | Comment fonctionne CMake dans ce projet |
-| 4 | [04_algorithmes_core.md](04_algorithmes_core.md) | Vecteurs, matrices, opérations linéaires |
-| 5 | [05_tests.md](05_tests.md) | Harness de tests et comment en ajouter |
+| 1 | [Architecture](01_architecture.md) | Structure des dossiers, couches du projet, flux de données |
+| 2 | [Makefile](02_makefile.md) | Compilation simple avec `make` (recommandé pour débuter) |
+| 3 | [CMake](03_cmake.md) | Système de build alternatif, plus puissant à grande échelle |
+| 4 | [Mathématiques de base](04_core_math.md) | Vecteurs, matrices, formules et implémentations |
+| 5 | [Stack technique](05_stack.md) | Langage, outils, conventions, tests |
 
-## Commandes rapides
+## Compilation rapide
 
-### Avec Makefile (simple)
+**Avec Makefile (le plus simple) :**
 
 ```bash
-make          # compile + affiche où sont les binaires
-make test     # compile et lance les 18 tests
+make          # compile + lance les tests
 make release  # compile optimisé
 make clean    # nettoie
 ```
 
-### Avec CMake (standard industrie)
+**Avec CMake :**
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
@@ -31,13 +30,15 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Les deux systèmes produisent la **même bibliothèque** et les **mêmes tests**. Utilise celui que tu préfères pour apprendre.
-
 ## Documentation API (Doxygen)
 
 Les en-têtes dans `include/yaj_ml/` contiennent des commentaires Doxygen sur chaque fonction publique. Pour générer la référence HTML :
 
 ```bash
 doxygen docs/Doxyfile.in
-# → ouvre docs/html/index.html
+# Résultat dans docs/html/index.html
 ```
+
+## Prochaines étapes
+
+Une fois le scaffold maîtrisé, le premier modèle ML à implémenter sera la **régression linéaire** dans `models/linear_regression/`.

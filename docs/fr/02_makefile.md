@@ -1,171 +1,173 @@
-# 02 — Comprendre le Makefile
+# Le Makefile expliqué
 
-Si tu n'as jamais utilisé CMake, **commence par le Makefile**. Il fait la même chose, mais de façon explicite et lisible.
+Le **Makefile** est un fichier qui dit à l'outil `make` comment compiler ton projet. C'est l'option la **plus simple** pour YAJ-ML : pas de configuration, pas de fichiers générés compliqués.
 
-## Qu'est-ce qu'un Makefile ?
+## Prérequis
 
-Un Makefile est un fichier de **recettes** pour le programme `make`. Chaque recette dit :
+- `gcc` (ou `clang`)
+- `make`
+- `ar` (archiver, pour créer la bibliothèque statique)
 
-> « Pour produire X, j'ai besoin de Y, et voici la commande à exécuter. »
-
-`make` vérifie quels fichiers ont changé et ne recompile **que le nécessaire** (compilation incrémentale).
-
-## Commandes de base
+Vérifier :
 
 ```bash
-make          # compile en mode debug
-make test     # compile + lance les tests
+gcc --version
+make --version
+```
+
+## Commandes essentielles
+
+```bash
+make          # compile en debug + lance les tests
 make release  # compile optimisé (-O2)
+make test     # compile puis exécute test_runner
 make clean    # supprime build-make/
 make help     # affiche l'aide
 ```
 
-## Anatomie du Makefile YAJ-ML
+## Que se passe-t-il quand tu tapes `make` ?
 
-### Variables (configuration)
-
-```makefile
-CC       := gcc                          # compilateur
-CFLAGS   := -std=c17 -Wall -Wextra ... # flags de compilation
-BUILD    := build-make                   # dossier de sortie
-LIB      := $(BUILD)/lib/libyaj_ml.a     # bibliothèque finale
-TEST_BIN := $(BUILD)/bin/test_runner     # exécutable de tests
+```
+make
+  └─► make debug
+        └─► compile src/*.c → build-make/obj/*.o
+        └─► ar rcs → build-make/lib/libyaj_ml.a
+        └─► compile tests/*.c + lie libyaj_ml.a
+        └─► build-make/bin/test_runner
 ```
 
-Les variables évitent de répéter les mêmes chemins partout.
+## Anatomie du Makefile
 
-### Liste des sources et objets
+Voici le [`Makefile`](../../Makefile) annoté section par section.
+
+### Variables de configuration
+
+```makefile
+CC       := gcc          # Compilateur C
+AR       := ar           # Outil pour créer des archives .a
+
+BUILD    := build-make   # Dossier de sortie (séparé de CMake)
+OBJ_DIR  := $(BUILD)/obj
+LIB_DIR  := $(BUILD)/lib
+BIN_DIR  := $(BUILD)/bin
+
+CFLAGS   := -std=c17 -Wall -Wextra -Wpedantic ...
+LDFLAGS  := -lm          # Lie la bibliothèque math (sqrt, etc.)
+```
+
+| Flag | Signification |
+|------|---------------|
+| `-std=c17` | Utilise le standard C17 |
+| `-Wall -Wextra -Wpedantic` | Active un maximum d'avertissements |
+| `-Iinclude` | Cherche les headers dans `include/` |
+| `-g -O0` | Mode debug : symboles de debug, pas d'optimisation |
+| `-O2` | Mode release : optimisations |
+| `-lm` | Lie `libm` (mathématiques) |
+
+### Sources et objets
 
 ```makefile
 LIB_SRCS := src/error.c src/vector.c src/matrix.c
 LIB_OBJS := $(LIB_SRCS:src/%.c=$(OBJ_DIR)/%.o)
 ```
 
-La syntaxe `$(VAR:src/%.c=$(OBJ_DIR)/%.o)` transforme :
-- `src/error.c` → `build-make/obj/error.o`
-- `src/vector.c` → `build-make/obj/vector.o`
-- etc.
+La syntaxe `$(VAR:pattern=replacement)` transforme :
 
-C'est une **substitution de pattern** Makefile.
+```
+src/error.c   →  build-make/obj/error.o
+src/vector.c  →  build-make/obj/vector.o
+src/matrix.c  →  build-make/obj/matrix.o
+```
 
-### Cibles (targets)
+### Cibles principales
 
-Une cible = un fichier à produire + ses dépendances + la commande.
+```makefile
+all: debug          # `make` sans argument appelle debug
+
+debug:
+    $(MAKE) BUILD_TYPE=debug $(LIB) $(TEST_BIN)
+
+release:
+    $(MAKE) BUILD_TYPE=release $(LIB) $(TEST_BIN)
+```
+
+Une **cible** (target) est un « objectif » à construire. `make debug` construit la bibliothèque et le binaire de test.
+
+### Créer la bibliothèque statique
 
 ```makefile
 $(LIB): $(LIB_OBJS) | $(LIB_DIR)
     $(AR) rcs $@ $^
 ```
 
-Lecture :
-- **Cible** : `$(LIB)` = `libyaj_ml.a`
-- **Dépendances** : tous les `.o` + le dossier `lib/` doit exister
-- **Commande** : `ar rcs` crée une bibliothèque statique à partir des objets
-
-Symboles spéciaux :
 | Symbole | Signification |
 |---------|---------------|
-| `$@` | la cible (libyaj_ml.a) |
-| `$^` | toutes les dépendances (tous les .o) |
-| `$<` | la première dépendance |
+| `$@` | La cible (`libyaj_ml.a`) |
+| `$^` | Toutes les dépendances (les `.o`) |
+| `\|` | Ordre seulement (crée le dossier avant) |
+| `ar rcs` | **r**emplace, crée l'**i**ndex, ajoute les fichiers |
 
-### Règle de compilation d'un .c → .o
+Une **bibliothèque statique** (`.a`) est une archive de fichiers objet. À la liaison, le linker copie le code nécessaire dans ton exécutable final.
 
-```makefile
-$(OBJ_DIR)/%.o: src/%.c | $(OBJ_DIR)
-    $(CC) $(CFLAGS) -c $< -o $@
-```
-
-- `%` = joker (error, vector, matrix…)
-- `-c` = compile seulement, ne lie pas
-- `$<` = le fichier .c source
-- `$@` = le fichier .o de sortie
-
-### Règle de liaison du test runner
+### Lier le test runner
 
 ```makefile
 $(TEST_BIN): $(TEST_OBJS) $(LIB) | $(BIN_DIR)
     $(CC) $(CFLAGS) -o $@ $(TEST_OBJS) $(LIB) $(LDFLAGS)
 ```
 
-Ici on **lie** les objets de test + la bibliothèque + `libm` (`-lm`) pour produire l'exécutable.
+Étapes :
+1. Compile chaque `tests/*.c` en `.o`
+2. Lie tous les `.o` + `libyaj_ml.a` + `libm`
+3. Produit `build-make/bin/test_runner`
 
-### Cibles `.PHONY`
-
-```makefile
-.PHONY: all debug release test clean help
-```
-
-Ces cibles ne produisent pas un fichier du même nom. Ce sont des **commandes** que `make` exécute toujours quand on les demande.
-
-## Mode debug vs release
+### Règles de compilation
 
 ```makefile
-ifeq ($(BUILD_TYPE),release)
-    CFLAGS += -O2        # optimisations
-else
-    CFLAGS += -g -O0     # symboles debug, pas d'optimisation
-endif
+$(OBJ_DIR)/%.o: src/%.c | $(OBJ_DIR)
+    $(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/test_%.o: tests/%.c | $(OBJ_DIR)
+    $(CC) $(CFLAGS) -Itests -c $< -o $@
 ```
 
-- **Debug** (`-g -O0`) : facile à déboguer avec `gdb`, compilation rapide.
-- **Release** (`-O2`) : code plus rapide, plus dur à déboguer.
+| Symbole | Signification |
+|---------|---------------|
+| `%` | Joker (n'importe quel nom) |
+| `$<` | La première dépendance (le fichier `.c`) |
+| `-c` | Compile seulement, ne lie pas |
 
-## Où vont les fichiers compilés ?
+**Pattern rule** : `$(OBJ_DIR)/%.o: src/%.c` signifie « pour transformer `src/foo.c` en `build-make/obj/foo.o`, exécute gcc -c ».
 
-```
-build-make/
-├── obj/
-│   ├── error.o
-│   ├── vector.o
-│   ├── matrix.o
-│   ├── test_main.o
-│   ├── test_error.o
-│   ├── test_vector.o
-│   └── test_matrix.o
-├── lib/
-│   └── libyaj_ml.a
-└── bin/
-    └── test_runner
-```
+## Makefile vs CMake
 
-Séparé du dossier `build/` de CMake pour éviter les conflits.
+| Aspect | Makefile | CMake |
+|--------|----------|-------|
+| Courbe d'apprentissage | Faible | Plus élevée |
+| Portabilité multi-plateforme | Manuelle | Automatique |
+| Intégration IDE | Limitée | Excellente |
+| Adapté à YAJ-ML maintenant | Oui | Oui (pour CI/futur) |
 
-## Équivalence Makefile ↔ commandes manuelles
+**Conseil** : utilise `make` pour apprendre et itérer rapidement. Passe à CMake quand le projet grandira (plusieurs modèles, CI, etc.).
 
-Si tu veux comprendre ce que `make` fait, voici l'équivalent à la main :
+## Ajouter un nouveau fichier source
 
-```bash
-mkdir -p build-make/obj build-make/lib build-make/bin
+Quand tu ajoutes par exemple `src/dataset.c` :
 
-# Compiler chaque source
-gcc -std=c17 -Wall -Wextra -Wpedantic -Iinclude -g -O0 -c src/error.c   -o build-make/obj/error.o
-gcc -std=c17 -Wall -Wextra -Wpedantic -Iinclude -g -O0 -c src/vector.c -o build-make/obj/vector.o
-gcc -std=c17 -Wall -Wextra -Wpedantic -Iinclude -g -O0 -c src/matrix.c -o build-make/obj/matrix.o
+1. Ajoute-le à `LIB_SRCS` :
+   ```makefile
+   LIB_SRCS := src/error.c src/vector.c src/matrix.c src/dataset.c
+   ```
+2. Crée `include/yaj_ml/dataset.h`
+3. `make clean && make test`
 
-# Créer la bibliothèque statique
-ar rcs build-make/lib/libyaj_ml.a build-make/obj/error.o build-make/obj/vector.o build-make/obj/matrix.o
+C'est tout — pas de fichier de config supplémentaire.
 
-# Compiler les tests
-gcc -std=c17 -Wall -Wextra -Wpedantic -Iinclude -Itests -g -O0 -c tests/test_main.c   -o build-make/obj/test_main.o
-# ... (autres tests)
+## Dépannage
 
-# Lier l'exécutable
-gcc -g -O0 -o build-make/bin/test_runner build-make/obj/test_*.o build-make/lib/libyaj_ml.a -lm
-
-# Lancer
-./build-make/bin/test_runner
-```
-
-Le Makefile automatise exactement ça, et ne recompile que ce qui a changé.
-
-## Makefile vs CMake : lequel utiliser ?
-
-| | Makefile | CMake |
-|---|----------|-------|
-| Lisibilité | Très explicite | Indirection (génère des fichiers) |
-| Portabilité | Linux/macOS facile | Windows + Linux + macOS |
-| Scalabilité | Devient verbeux sur gros projets | Gère bien les gros projets |
-| Pour apprendre | **Oui, commence ici** | Utile ensuite en entreprise |
-
-Les deux coexistent dans ce projet. Tu peux n'utiliser que le Makefile si tu préfères.
+| Problème | Solution |
+|----------|----------|
+| `make: command not found` | Installe `build-essential` (Debian/Ubuntu) |
+| Erreur de compilation | Lis le message ; souvent un header manquant ou un typo |
+| Tests échouent | `./build-make/bin/test_runner` pour voir quel test |
+| Veux repartir de zéro | `make clean` |
