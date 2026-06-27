@@ -139,3 +139,68 @@ TEST(mat_add_row)
     mat_free(&src);
     mat_free(&out);
 }
+
+TEST(mat_create_from_buffer)
+{
+    yaj_ml_mat_t m;
+    const double data[] = {1.0, 2.0, 3.0, 4.0};
+    double value;
+
+    ASSERT_STATUS_OK(mat_create_from_buffer(2, 2, data, &m));
+    ASSERT_EQ(2, m.rows);
+    ASSERT_EQ(2, m.cols);
+    ASSERT_STATUS_OK(mat_get(&m, 1, 0, &value));
+    ASSERT_NEAR(3.0, value, TEST_EPSILON);
+
+    mat_free(&m);
+}
+
+TEST(mat_solve_identity)
+{
+    yaj_ml_mat_t a;
+    yaj_ml_vec_t b;
+    yaj_ml_vec_t x;
+
+    ASSERT_STATUS_OK(mat_create(2, 2, &a));
+    ASSERT_STATUS_OK(vec_create(2, &b));
+    ASSERT_STATUS_OK(vec_create(2, &x));
+
+    ASSERT_STATUS_OK(mat_set(&a, 0, 0, 1.0));
+    ASSERT_STATUS_OK(mat_set(&a, 1, 1, 1.0));
+    b.data[0] = 3.0;
+    b.data[1] = 5.0;
+
+    ASSERT_STATUS_OK(mat_solve(&a, &b, &x));
+    ASSERT_NEAR(3.0, x.data[0], TEST_EPSILON);
+    ASSERT_NEAR(5.0, x.data[1], TEST_EPSILON);
+
+    mat_free(&a);
+    vec_free(&b);
+    vec_free(&x);
+}
+
+TEST(mat_solve_2x2)
+{
+    yaj_ml_mat_t a;
+    yaj_ml_vec_t b;
+    yaj_ml_vec_t x;
+
+    ASSERT_STATUS_OK(mat_create(2, 2, &a));
+    ASSERT_STATUS_OK(vec_create(2, &b));
+    ASSERT_STATUS_OK(vec_create(2, &x));
+
+    ASSERT_STATUS_OK(mat_set(&a, 0, 0, 2.0));
+    ASSERT_STATUS_OK(mat_set(&a, 0, 1, 1.0));
+    ASSERT_STATUS_OK(mat_set(&a, 1, 0, 1.0));
+    ASSERT_STATUS_OK(mat_set(&a, 1, 1, 3.0));
+    b.data[0] = 4.0;
+    b.data[1] = 5.0;
+
+    ASSERT_STATUS_OK(mat_solve(&a, &b, &x));
+    ASSERT_NEAR(1.4, x.data[0], 1e-9);
+    ASSERT_NEAR(1.2, x.data[1], 1e-9);
+
+    mat_free(&a);
+    vec_free(&b);
+    vec_free(&x);
+}

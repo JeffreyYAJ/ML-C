@@ -126,6 +126,44 @@ depend:
 	cd /home/yaj/Desktop/ML-C/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
+# Convenience name for target.
+models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule
+.PHONY : models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule
+
+# Convenience name for target.
+yaj_ml_linear_regression: models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule
+.PHONY : yaj_ml_linear_regression
+
+# fast build rule for target.
+yaj_ml_linear_regression/fast:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build
+.PHONY : yaj_ml_linear_regression/fast
+
+linear_regression.o: linear_regression.c.o
+.PHONY : linear_regression.o
+
+# target to build an object file
+linear_regression.c.o:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/linear_regression.c.o
+.PHONY : linear_regression.c.o
+
+linear_regression.i: linear_regression.c.i
+.PHONY : linear_regression.i
+
+# target to preprocess a source file
+linear_regression.c.i:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/linear_regression.c.i
+.PHONY : linear_regression.c.i
+
+linear_regression.s: linear_regression.c.s
+.PHONY : linear_regression.s
+
+# target to generate assembly for a file
+linear_regression.c.s:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/linear_regression.c.s
+.PHONY : linear_regression.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -135,6 +173,10 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... yaj_ml_linear_regression"
+	@echo "... linear_regression.o"
+	@echo "... linear_regression.i"
+	@echo "... linear_regression.s"
 .PHONY : help
 
 

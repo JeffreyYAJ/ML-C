@@ -15,6 +15,8 @@ const char *yaj_ml_status_str(yaj_ml_status_t status)
         return "invalid argument";
     case YAJ_ML_ERR_NOT_FITTED:
         return "model not fitted";
+    case YAJ_ML_ERR_SINGULAR:
+        return "singular matrix";
     default:
         return "unknown error";
     }

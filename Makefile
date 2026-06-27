@@ -26,9 +26,15 @@ LIB_SRCS := src/error.c src/vector.c src/matrix.c
 LIB_OBJS := $(LIB_SRCS:src/%.c=$(OBJ_DIR)/%.o)
 LIB      := $(LIB_DIR)/libyaj_ml.a
 
+# --- sources des modèles ---
+LR_SRCS  := models/linear_regression/linear_regression.c
+LR_OBJS  := $(OBJ_DIR)/linear_regression.o
+LR_LIB   := $(LIB_DIR)/libyaj_ml_linear_regression.a
+
 # --- sources des tests ---
 TEST_SRCS := tests/test_main.c tests/test_error.c \
-             tests/test_vector.c tests/test_matrix.c
+             tests/test_vector.c tests/test_matrix.c \
+             tests/test_linear_regression.c
 TEST_OBJS := $(TEST_SRCS:tests/%.c=$(OBJ_DIR)/test_%.o)
 TEST_BIN  := $(BIN_DIR)/test_runner
 
@@ -46,14 +52,14 @@ endif
 all: debug
 
 debug:
-	$(MAKE) BUILD_TYPE=debug $(LIB) $(TEST_BIN)
+	$(MAKE) BUILD_TYPE=debug $(LIB) $(LR_LIB) $(TEST_BIN)
 	@echo ""
 	@echo "=== Build debug terminé ==="
 	@echo "Bibliothèque : $(LIB)"
 	@echo "Tests        : $(TEST_BIN)"
 
 release:
-	$(MAKE) BUILD_TYPE=release $(LIB) $(TEST_BIN)
+	$(MAKE) BUILD_TYPE=release $(LIB) $(LR_LIB) $(TEST_BIN)
 	@echo ""
 	@echo "=== Build release terminé ==="
 
@@ -80,10 +86,16 @@ help:
 $(LIB): $(LIB_OBJS) | $(LIB_DIR)
 	$(AR) rcs $@ $^
 
-$(TEST_BIN): $(TEST_OBJS) $(LIB) | $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $@ $(TEST_OBJS) $(LIB) $(LDFLAGS)
+$(LR_LIB): $(LR_OBJS) | $(LIB_DIR)
+	$(AR) rcs $@ $^
+
+$(TEST_BIN): $(TEST_OBJS) $(LR_LIB) $(LIB) | $(BIN_DIR)
+	$(CC) $(CFLAGS) -o $@ $(TEST_OBJS) $(LR_LIB) $(LIB) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: src/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/linear_regression.o: models/linear_regression/linear_regression.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/test_%.o: tests/%.c | $(OBJ_DIR)

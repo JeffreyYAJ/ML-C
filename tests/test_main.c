@@ -22,6 +22,16 @@ void test_mat_mul(void);
 void test_mat_transpose(void);
 void test_mat_vec_mul(void);
 void test_mat_add_row(void);
+void test_mat_create_from_buffer(void);
+void test_mat_solve_identity(void);
+void test_mat_solve_2x2(void);
+
+void test_lr_init_and_free(void);
+void test_lr_fit_normal_equation_1d(void);
+void test_lr_fit_normal_equation_2d(void);
+void test_lr_fit_gradient_descent(void);
+void test_lr_not_fitted(void);
+void test_lr_predict_dim_mismatch(void);
 
 static test_case_t g_tests[] = {
     {"status_str_ok", test_status_str_ok},
@@ -42,6 +52,15 @@ static test_case_t g_tests[] = {
     {"mat_transpose", test_mat_transpose},
     {"mat_vec_mul", test_mat_vec_mul},
     {"mat_add_row", test_mat_add_row},
+    {"mat_create_from_buffer", test_mat_create_from_buffer},
+    {"mat_solve_identity", test_mat_solve_identity},
+    {"mat_solve_2x2", test_mat_solve_2x2},
+    {"lr_init_and_free", test_lr_init_and_free},
+    {"lr_fit_normal_equation_1d", test_lr_fit_normal_equation_1d},
+    {"lr_fit_normal_equation_2d", test_lr_fit_normal_equation_2d},
+    {"lr_fit_gradient_descent", test_lr_fit_gradient_descent},
+    {"lr_not_fitted", test_lr_not_fitted},
+    {"lr_predict_dim_mismatch", test_lr_predict_dim_mismatch},
 };
 
 int main(void)

@@ -9,4 +9,4 @@ typedef double yaj_ml_real_t;
 /** Index type for dimensions and element access. */
 typedef size_t yaj_ml_index_t;
 
-#endif /* YAJ_ML_TYPES_H */
+#endif 

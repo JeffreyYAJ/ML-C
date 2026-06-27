@@ -11,6 +11,7 @@ Bienvenue dans la documentation pédagogique de **YAJ-ML**. Ces guides expliquen
 | 3 | [CMake](03_cmake.md) | Système de build alternatif, plus puissant à grande échelle |
 | 4 | [Mathématiques de base](04_core_math.md) | Vecteurs, matrices, formules et implémentations |
 | 5 | [Stack technique](05_stack.md) | Langage, outils, conventions, tests |
+| 6 | [Régression linéaire](06_linear_regression.md) | Premier modèle ML : équations normales + gradient descent |
 
 ## Compilation rapide
 

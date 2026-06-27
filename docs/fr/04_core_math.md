@@ -274,6 +274,17 @@ Ensuite : \(\hat{y} = X_{aug} \cdot [\mathbf{w}; b]\) en un seul `mat_vec_mul`.
 | `mat_transpose` | O(mn) | \(X^T X\) |
 | `mat_vec_mul` | O(mn) | Prédiction \(\hat{y} = Xw\) |
 | `mat_add_row` | O(mn) | Terme de biais |
+| `mat_solve` | O(n³) | Équations normales (régression linéaire) |
+
+### Résolution de systèmes linéaires (`mat_solve`)
+
+Résout \(A\mathbf{x} = \mathbf{b}\) où \(A\) est une matrice carrée \(n \times n\).
+
+**Algorithme** : élimination de Gauss avec **pivot partiel** (choisir le plus grand élément de la colonne comme pivot pour la stabilité numérique).
+
+Utilisé par la régression linéaire pour calculer \(\mathbf{w} = (X^T X)^{-1} X^T \mathbf{y}\) sans inversion explicite — on résout \((X^T X)\mathbf{w} = X^T \mathbf{y}\).
+
+Voir [06_linear_regression.md](06_linear_regression.md).
 
 ---
 

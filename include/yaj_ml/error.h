@@ -16,6 +16,7 @@ typedef enum {
     YAJ_ML_ERR_DIM,
     YAJ_ML_ERR_INVALID_ARG,
     YAJ_ML_ERR_NOT_FITTED,
+    YAJ_ML_ERR_SINGULAR,
 } yaj_ml_status_t;
 
 /**

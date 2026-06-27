@@ -164,6 +164,30 @@ test_error.c.s:
 	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/test_error.c.s
 .PHONY : test_error.c.s
 
+test_linear_regression.o: test_linear_regression.c.o
+.PHONY : test_linear_regression.o
+
+# target to build an object file
+test_linear_regression.c.o:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/test_linear_regression.c.o
+.PHONY : test_linear_regression.c.o
+
+test_linear_regression.i: test_linear_regression.c.i
+.PHONY : test_linear_regression.i
+
+# target to preprocess a source file
+test_linear_regression.c.i:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/test_linear_regression.c.i
+.PHONY : test_linear_regression.c.i
+
+test_linear_regression.s: test_linear_regression.c.s
+.PHONY : test_linear_regression.s
+
+# target to generate assembly for a file
+test_linear_regression.c.s:
+	cd /home/yaj/Desktop/ML-C/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/test_linear_regression.c.s
+.PHONY : test_linear_regression.c.s
+
 test_main.o: test_main.c.o
 .PHONY : test_main.o
 
@@ -249,6 +273,9 @@ help:
 	@echo "... test_error.o"
 	@echo "... test_error.i"
 	@echo "... test_error.s"
+	@echo "... test_linear_regression.o"
+	@echo "... test_linear_regression.i"
+	@echo "... test_linear_regression.s"
 	@echo "... test_main.o"
 	@echo "... test_main.i"
 	@echo "... test_main.s"

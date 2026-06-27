@@ -75,6 +75,30 @@ yaj_ml_status_t mat_copy(const yaj_ml_mat_t *src, yaj_ml_mat_t *out)
     return YAJ_ML_OK;
 }
 
+yaj_ml_status_t mat_create_from_buffer(size_t rows, size_t cols,
+                                      const double *data, yaj_ml_mat_t *out)
+{
+    yaj_ml_status_t status;
+    size_t count;
+
+    if (data == NULL || out == NULL) {
+        return YAJ_ML_ERR_NULL_PTR;
+    }
+
+    if (rows == 0 || cols == 0) {
+        return YAJ_ML_ERR_INVALID_ARG;
+    }
+
+    status = mat_create(rows, cols, out);
+    if (status != YAJ_ML_OK) {
+        return status;
+    }
+
+    count = rows * cols;
+    memcpy(out->data, data, count * sizeof(double));
+    return YAJ_ML_OK;
+}
+
 yaj_ml_status_t mat_get(const yaj_ml_mat_t *mat, size_t row, size_t col,
                         double *out)
 {
@@ -258,5 +282,106 @@ yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out)
         out->data[mat_index(i, out->cols, src->cols)] = 1.0;
     }
 
+    return YAJ_ML_OK;
+}
+
+yaj_ml_status_t mat_solve(const yaj_ml_mat_t *a, const yaj_ml_vec_t *b,
+                          yaj_ml_vec_t *x)
+{
+    size_t n;
+    size_t i;
+    size_t j;
+    size_t k;
+    size_t pivot_row;
+    double pivot_val;
+    double max_val;
+    double factor;
+    double *aug;
+    double abs_val;
+
+    if (a == NULL || b == NULL || x == NULL) {
+        return YAJ_ML_ERR_NULL_PTR;
+    }
+
+    if (a->data == NULL || b->data == NULL || x->data == NULL) {
+        return YAJ_ML_ERR_INVALID_ARG;
+    }
+
+    if (a->rows != a->cols) {
+        return YAJ_ML_ERR_DIM;
+    }
+
+    n = a->rows;
+
+    if (b->n != n || x->n != n) {
+        return YAJ_ML_ERR_DIM;
+    }
+
+    /*
+     * Build augmented matrix [A | b] as a flat row-major array (n x (n+1)).
+     * Gaussian elimination with partial pivoting finds x such that A*x = b.
+     */
+    aug = malloc(n * (n + 1U) * sizeof(double));
+    if (aug == NULL) {
+        return YAJ_ML_ERR_ALLOC;
+    }
+
+    for (i = 0; i < n; ++i) {
+        for (j = 0; j < n; ++j) {
+            aug[i * (n + 1U) + j] = a->data[mat_index(i, n, j)];
+        }
+        aug[i * (n + 1U) + n] = b->data[i];
+    }
+
+    for (k = 0; k < n; ++k) {
+        /* Partial pivoting: pick the largest pivot in column k. */
+        pivot_row = k;
+        max_val = 0.0;
+        for (i = k; i < n; ++i) {
+            abs_val = aug[i * (n + 1U) + k];
+            if (abs_val < 0.0) {
+                abs_val = -abs_val;
+            }
+            if (abs_val > max_val) {
+                max_val = abs_val;
+                pivot_row = i;
+            }
+        }
+
+        if (max_val < 1e-12) {
+            free(aug);
+            return YAJ_ML_ERR_SINGULAR;
+        }
+
+        if (pivot_row != k) {
+            for (j = k; j <= n; ++j) {
+                double tmp = aug[k * (n + 1U) + j];
+                aug[k * (n + 1U) + j] = aug[pivot_row * (n + 1U) + j];
+                aug[pivot_row * (n + 1U) + j] = tmp;
+            }
+        }
+
+        pivot_val = aug[k * (n + 1U) + k];
+
+        /* Eliminate entries below the pivot. */
+        for (i = k + 1U; i < n; ++i) {
+            factor = aug[i * (n + 1U) + k] / pivot_val;
+            aug[i * (n + 1U) + k] = 0.0;
+            for (j = k + 1U; j <= n; ++j) {
+                aug[i * (n + 1U) + j] -= factor * aug[k * (n + 1U) + j];
+            }
+        }
+    }
+
+    /* Back substitution. */
+    for (i = n; i-- > 0U;) {
+        double sum = aug[i * (n + 1U) + n];
+        for (j = i + 1U; j < n; ++j) {
+            sum -= aug[i * (n + 1U) + j] * x->data[j];
+        }
+        x->data[i] = sum / aug[i * (n + 1U) + i];
+    }
+
+    free(aug);
     return YAJ_ML_OK;
 }

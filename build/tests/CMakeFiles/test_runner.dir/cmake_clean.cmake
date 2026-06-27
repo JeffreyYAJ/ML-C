@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/test_runner.dir/test_error.c.o"
   "CMakeFiles/test_runner.dir/test_error.c.o.d"
+  "CMakeFiles/test_runner.dir/test_linear_regression.c.o"
+  "CMakeFiles/test_runner.dir/test_linear_regression.c.o.d"
   "CMakeFiles/test_runner.dir/test_main.c.o"
   "CMakeFiles/test_runner.dir/test_main.c.o.d"
   "CMakeFiles/test_runner.dir/test_matrix.c.o"

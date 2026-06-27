@@ -125,7 +125,7 @@ models/knn/clean:
 # Directory level rules for directory models/linear_regression
 
 # Recursive "all" directory target.
-models/linear_regression/all:
+models/linear_regression/all: models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/all
 .PHONY : models/linear_regression/all
 
 # Recursive "preinstall" directory target.
@@ -133,7 +133,7 @@ models/linear_regression/preinstall:
 .PHONY : models/linear_regression/preinstall
 
 # Recursive "clean" directory target.
-models/linear_regression/clean:
+models/linear_regression/clean: models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/clean
 .PHONY : models/linear_regression/clean
 
 #=============================================================================
@@ -203,7 +203,7 @@ tests/clean: tests/CMakeFiles/test_runner.dir/clean
 CMakeFiles/yaj_ml.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yaj_ml.dir/build.make CMakeFiles/yaj_ml.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yaj_ml.dir/build.make CMakeFiles/yaj_ml.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/yaj/Desktop/ML-C/build/CMakeFiles --progress-num=6,7,8,9 "Built target yaj_ml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/yaj/Desktop/ML-C/build/CMakeFiles --progress-num=7,8,9,10 "Built target yaj_ml"
 .PHONY : CMakeFiles/yaj_ml.dir/all
 
 # Build rule for subdir invocation for target.
@@ -223,18 +223,45 @@ CMakeFiles/yaj_ml.dir/clean:
 .PHONY : CMakeFiles/yaj_ml.dir/clean
 
 #=============================================================================
+# Target rules for target models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir
+
+# All Build rule for target.
+models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/all: CMakeFiles/yaj_ml.dir/all
+	$(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/depend
+	$(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/yaj/Desktop/ML-C/build/CMakeFiles --progress-num=11,12 "Built target yaj_ml_linear_regression"
+.PHONY : models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/all
+
+# Build rule for subdir invocation for target.
+models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yaj/Desktop/ML-C/build/CMakeFiles 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yaj/Desktop/ML-C/build/CMakeFiles 0
+.PHONY : models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule
+
+# Convenience name for target.
+yaj_ml_linear_regression: models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/rule
+.PHONY : yaj_ml_linear_regression
+
+# clean rule for target.
+models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/clean:
+	$(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/clean
+.PHONY : models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/clean
+
+#=============================================================================
 # Target rules for target tests/CMakeFiles/test_runner.dir
 
 # All Build rule for target.
 tests/CMakeFiles/test_runner.dir/all: CMakeFiles/yaj_ml.dir/all
+tests/CMakeFiles/test_runner.dir/all: models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/test_runner.dir/build.make tests/CMakeFiles/test_runner.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/yaj/Desktop/ML-C/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target test_runner"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/yaj/Desktop/ML-C/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target test_runner"
 .PHONY : tests/CMakeFiles/test_runner.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_runner.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/yaj/Desktop/ML-C/build/CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yaj/Desktop/ML-C/build/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/test_runner.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/yaj/Desktop/ML-C/build/CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_runner.dir/rule

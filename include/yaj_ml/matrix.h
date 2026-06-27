@@ -55,6 +55,20 @@ void mat_free(yaj_ml_mat_t *mat);
 yaj_ml_status_t mat_copy(const yaj_ml_mat_t *src, yaj_ml_mat_t *out);
 
 /**
+ * @brief Create a matrix from a row-major buffer (deep copy).
+ *
+ * @param rows Number of rows.
+ * @param cols Number of columns.
+ * @param data Source buffer of size rows * cols in row-major order. Must not be NULL.
+ * @param out Output matrix. Caller owns the returned object; free with mat_free.
+ * @return YAJ_ML_OK on success, or an error code on failure.
+ *
+ * @complexity O(rows * cols)
+ */
+yaj_ml_status_t mat_create_from_buffer(size_t rows, size_t cols,
+                                      const double *data, yaj_ml_mat_t *out);
+
+/**
  * @brief Read element at row @p row and column @p col.
  *
  * @param mat Input matrix. Must not be NULL.
@@ -135,5 +149,22 @@ yaj_ml_status_t mat_vec_mul(const yaj_ml_mat_t *mat, const yaj_ml_vec_t *vec,
  * @complexity O(m * n)
  */
 yaj_ml_status_t mat_add_row(const yaj_ml_mat_t *src, yaj_ml_mat_t *out);
+
+/**
+ * @brief Solve the linear system A * x = b.
+ *
+ * Uses Gaussian elimination with partial pivoting. @p a must be square and
+ * non-singular; @p b and @p x must have length equal to the number of rows.
+ *
+ * @param a Coefficient matrix (n x n). Must not be NULL.
+ * @param b Right-hand side vector (n). Must not be NULL.
+ * @param x Output solution vector (n). Caller must provide pre-allocated storage.
+ * @return YAJ_ML_OK on success, YAJ_ML_ERR_SINGULAR if @p a is singular,
+ *         or another error code on failure.
+ *
+ * @complexity O(n^3)
+ */
+yaj_ml_status_t mat_solve(const yaj_ml_mat_t *a, const yaj_ml_vec_t *b,
+                          yaj_ml_vec_t *x);
 
 #endif /* YAJ_ML_MATRIX_H */

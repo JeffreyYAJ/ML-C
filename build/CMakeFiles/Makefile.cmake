@@ -56,5 +56,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/yaj_ml.dir/DependInfo.cmake"
+  "models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_runner.dir/DependInfo.cmake"
   )

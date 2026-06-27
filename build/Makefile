@@ -140,6 +140,19 @@ yaj_ml/fast:
 .PHONY : yaj_ml/fast
 
 #=============================================================================
+# Target rules for targets named yaj_ml_linear_regression
+
+# Build rule for target.
+yaj_ml_linear_regression: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 yaj_ml_linear_regression
+.PHONY : yaj_ml_linear_regression
+
+# fast build rule for target.
+yaj_ml_linear_regression/fast:
+	$(MAKE) $(MAKESILENT) -f models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build.make models/linear_regression/CMakeFiles/yaj_ml_linear_regression.dir/build
+.PHONY : yaj_ml_linear_regression/fast
+
+#=============================================================================
 # Target rules for targets named test_runner
 
 # Build rule for target.
@@ -235,6 +248,7 @@ help:
 	@echo "... test"
 	@echo "... test_runner"
 	@echo "... yaj_ml"
+	@echo "... yaj_ml_linear_regression"
 	@echo "... src/error.o"
 	@echo "... src/error.i"
 	@echo "... src/error.s"
