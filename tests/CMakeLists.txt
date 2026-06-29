@@ -4,9 +4,14 @@ add_executable(test_runner
     test_vector.c
     test_matrix.c
     test_linear_regression.c
+    test_logistic_regression.c
 )
 
-target_link_libraries(test_runner PRIVATE yaj_ml yaj_ml_linear_regression)
+target_link_libraries(test_runner PRIVATE
+    yaj_ml
+    yaj_ml_linear_regression
+    yaj_ml_logistic_regression
+)
 target_include_directories(test_runner PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 
 yaj_ml_set_compiler_warnings(test_runner)

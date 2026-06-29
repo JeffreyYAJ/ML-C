@@ -33,6 +33,13 @@ void test_lr_fit_gradient_descent(void);
 void test_lr_not_fitted(void);
 void test_lr_predict_dim_mismatch(void);
 
+void test_logreg_init_and_free(void);
+void test_logreg_fit_and_predict_1d(void);
+void test_logreg_fit_and_gate(void);
+void test_logreg_invalid_labels(void);
+void test_logreg_not_fitted(void);
+void test_logreg_predict_dim_mismatch(void);
+
 static test_case_t g_tests[] = {
     {"status_str_ok", test_status_str_ok},
     {"status_str_null_ptr", test_status_str_null_ptr},
@@ -61,6 +68,12 @@ static test_case_t g_tests[] = {
     {"lr_fit_gradient_descent", test_lr_fit_gradient_descent},
     {"lr_not_fitted", test_lr_not_fitted},
     {"lr_predict_dim_mismatch", test_lr_predict_dim_mismatch},
+    {"logreg_init_and_free", test_logreg_init_and_free},
+    {"logreg_fit_and_predict_1d", test_logreg_fit_and_predict_1d},
+    {"logreg_fit_and_gate", test_logreg_fit_and_gate},
+    {"logreg_invalid_labels", test_logreg_invalid_labels},
+    {"logreg_not_fitted", test_logreg_not_fitted},
+    {"logreg_predict_dim_mismatch", test_logreg_predict_dim_mismatch},
 };
 
 int main(void)

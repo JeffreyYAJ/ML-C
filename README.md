@@ -7,7 +7,7 @@ A Machine Learning library written entirely in **ISO C17**, with no external num
 Implement the following algorithms (in progress):
 
 - Linear Regression — **done** (normal equation + gradient descent)
-- Logistic Regression
+- Logistic Regression — **done** (batch gradient descent, binary classification)
 - Perceptron
 - k-Nearest Neighbors (KNN)
 - Support Vector Machine (Linear SVM)
@@ -115,6 +115,7 @@ Step-by-step documentation explaining architecture, Makefile, CMake, algorithms,
 | [docs/fr/04_core_math.md](docs/fr/04_core_math.md) | Vector/matrix algorithms and formulas |
 | [docs/fr/05_stack.md](docs/fr/05_stack.md) | Full tech stack overview |
 | [docs/fr/06_linear_regression.md](docs/fr/06_linear_regression.md) | Linear regression: math, API, both training methods |
+| [docs/fr/07_logistic_regression.md](docs/fr/07_logistic_regression.md) | Logistic regression: sigmoid, BCE, classification |
 
 ### API reference (Doxygen)
 
