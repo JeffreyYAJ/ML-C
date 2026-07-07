@@ -13,6 +13,7 @@ Bienvenue dans la documentation pédagogique de **YAJ-ML**. Ces guides expliquen
 | 5 | [Stack technique](05_stack.md) | Langage, outils, conventions, tests |
 | 6 | [Régression linéaire](06_linear_regression.md) | Premier modèle ML : équations normales + gradient descent |
 | 7 | [Régression logistique](07_logistic_regression.md) | Classification binaire, sigmoïde, BCE |
+| 8 | [k-Nearest Neighbors](08_knn.md) | Classification et régression par vote / moyenne |
 
 ## Compilation rapide
 
