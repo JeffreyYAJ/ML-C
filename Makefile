@@ -35,13 +35,18 @@ LOGREG_SRCS := models/logistic_regression/logistic_regression.c
 LOGREG_OBJS := $(OBJ_DIR)/logistic_regression.o
 LOGREG_LIB  := $(LIB_DIR)/libyaj_ml_logistic_regression.a
 
-MODEL_LIBS := $(LOGREG_LIB) $(LR_LIB)
+KNN_SRCS := models/knn/knn.c
+KNN_OBJS := $(OBJ_DIR)/knn.o
+KNN_LIB  := $(LIB_DIR)/libyaj_ml_knn.a
+
+MODEL_LIBS := $(KNN_LIB) $(LOGREG_LIB) $(LR_LIB)
 
 # --- sources des tests ---
 TEST_SRCS := tests/test_main.c tests/test_error.c \
              tests/test_vector.c tests/test_matrix.c \
              tests/test_linear_regression.c \
-             tests/test_logistic_regression.c
+             tests/test_logistic_regression.c \
+             tests/test_knn.c
 TEST_OBJS := $(TEST_SRCS:tests/%.c=$(OBJ_DIR)/test_%.o)
 TEST_BIN  := $(BIN_DIR)/test_runner
 
@@ -99,6 +104,9 @@ $(LR_LIB): $(LR_OBJS) | $(LIB_DIR)
 $(LOGREG_LIB): $(LOGREG_OBJS) | $(LIB_DIR)
 	$(AR) rcs $@ $^
 
+$(KNN_LIB): $(KNN_OBJS) | $(LIB_DIR)
+	$(AR) rcs $@ $^
+
 $(TEST_BIN): $(TEST_OBJS) $(MODEL_LIBS) $(LIB) | $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $(TEST_OBJS) $(MODEL_LIBS) $(LIB) $(LDFLAGS)
 
@@ -109,6 +117,9 @@ $(OBJ_DIR)/linear_regression.o: models/linear_regression/linear_regression.c | $
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/logistic_regression.o: models/logistic_regression/logistic_regression.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/knn.o: models/knn/knn.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/test_%.o: tests/%.c | $(OBJ_DIR)

@@ -40,6 +40,15 @@ void test_logreg_invalid_labels(void);
 void test_logreg_not_fitted(void);
 void test_logreg_predict_dim_mismatch(void);
 
+void test_knn_init_and_free(void);
+void test_knn_classification_1d(void);
+void test_knn_classification_2d(void);
+void test_knn_k1_nearest(void);
+void test_knn_regression(void);
+void test_knn_invalid_k(void);
+void test_knn_not_fitted(void);
+void test_knn_predict_dim_mismatch(void);
+
 static test_case_t g_tests[] = {
     {"status_str_ok", test_status_str_ok},
     {"status_str_null_ptr", test_status_str_null_ptr},
@@ -74,6 +83,14 @@ static test_case_t g_tests[] = {
     {"logreg_invalid_labels", test_logreg_invalid_labels},
     {"logreg_not_fitted", test_logreg_not_fitted},
     {"logreg_predict_dim_mismatch", test_logreg_predict_dim_mismatch},
+    {"knn_init_and_free", test_knn_init_and_free},
+    {"knn_classification_1d", test_knn_classification_1d},
+    {"knn_classification_2d", test_knn_classification_2d},
+    {"knn_k1_nearest", test_knn_k1_nearest},
+    {"knn_regression", test_knn_regression},
+    {"knn_invalid_k", test_knn_invalid_k},
+    {"knn_not_fitted", test_knn_not_fitted},
+    {"knn_predict_dim_mismatch", test_knn_predict_dim_mismatch},
 };
 
 int main(void)
