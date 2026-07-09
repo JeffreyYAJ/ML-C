@@ -14,6 +14,7 @@ Bienvenue dans la documentation pédagogique de **YAJ-ML**. Ces guides expliquen
 | 6 | [Régression linéaire](06_linear_regression.md) | Premier modèle ML : équations normales + gradient descent |
 | 7 | [Régression logistique](07_logistic_regression.md) | Classification binaire, sigmoïde, BCE |
 | 8 | [k-Nearest Neighbors](08_knn.md) | Classification et régression par vote / moyenne |
+| 9 | [Perceptron](09_perceptron.md) | Classification linéaire, règle de Rosenblatt |
 
 ## Compilation rapide
 

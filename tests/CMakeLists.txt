@@ -6,6 +6,7 @@ add_executable(test_runner
     test_linear_regression.c
     test_logistic_regression.c
     test_knn.c
+    test_perceptron.c
 )
 
 target_link_libraries(test_runner PRIVATE
@@ -13,6 +14,7 @@ target_link_libraries(test_runner PRIVATE
     yaj_ml_linear_regression
     yaj_ml_logistic_regression
     yaj_ml_knn
+    yaj_ml_perceptron
 )
 target_include_directories(test_runner PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 

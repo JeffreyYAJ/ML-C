@@ -9,7 +9,7 @@ Implement the following algorithms (in progress):
 - Linear Regression — **done** (normal equation + gradient descent)
 - Logistic Regression — **done** (batch gradient descent, binary classification)
 - k-Nearest Neighbors (KNN) — **done** (classification + regression, Euclidean distance)
-- Perceptron
+- Perceptron — **done** (Rosenblatt rule, binary linear classification)
 - Support Vector Machine (Linear SVM)
 
 Future versions may add Decision Trees, Random Forests, Naive Bayes, PCA, and K-Means.
@@ -117,6 +117,7 @@ Step-by-step documentation explaining architecture, Makefile, CMake, algorithms,
 | [docs/fr/06_linear_regression.md](docs/fr/06_linear_regression.md) | Linear regression: math, API, both training methods |
 | [docs/fr/07_logistic_regression.md](docs/fr/07_logistic_regression.md) | Logistic regression: sigmoid, BCE, classification |
 | [docs/fr/08_knn.md](docs/fr/08_knn.md) | KNN: distance, vote majoritaire, lazy learning |
+| [docs/fr/09_perceptron.md](docs/fr/09_perceptron.md) | Perceptron: step activation, convergence |
 
 ### API reference (Doxygen)
 
