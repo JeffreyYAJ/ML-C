@@ -118,6 +118,7 @@ Step-by-step documentation explaining architecture, Makefile, CMake, algorithms,
 | [docs/fr/07_logistic_regression.md](docs/fr/07_logistic_regression.md) | Logistic regression: sigmoid, BCE, classification |
 | [docs/fr/08_knn.md](docs/fr/08_knn.md) | KNN: distance, vote majoritaire, lazy learning |
 | [docs/fr/09_perceptron.md](docs/fr/09_perceptron.md) | Perceptron: step activation, convergence |
+| [docs/fr/10_svm.md](docs/fr/10_svm.md) | Linear SVM: hinge loss, margin, regularization |
 
 ### API reference (Doxygen)
 
