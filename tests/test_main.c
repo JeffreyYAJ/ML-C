@@ -113,6 +113,12 @@ static test_case_t g_tests[] = {
     {"perc_invalid_labels", test_perc_invalid_labels},
     {"perc_not_fitted", test_perc_not_fitted},
     {"perc_predict_dim_mismatch", test_perc_predict_dim_mismatch},
+    {"svm_init_and_free", test_svm_init_and_free},
+    {"svm_fit_1d_separable", test_svm_fit_1d_separable},
+    {"svm_fit_and_gate", test_svm_fit_and_gate},
+    {"svm_invalid_labels", test_svm_invalid_labels},
+    {"svm_not_fitted", test_svm_not_fitted},
+    {"svm_predict_dim_mismatch", test_svm_predict_dim_mismatch},
 };
 
 int main(void)

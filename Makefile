@@ -141,6 +141,9 @@ $(OBJ_DIR)/knn.o: models/knn/knn.c | $(OBJ_DIR)
 $(OBJ_DIR)/perceptron.o: models/perceptron/perceptron.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJ_DIR)/svm.o: models/svm/svm.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(OBJ_DIR)/test_%.o: tests/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -Itests -c $< -o $@
 
