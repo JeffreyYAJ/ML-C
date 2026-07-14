@@ -120,6 +120,9 @@ $(KNN_LIB): $(KNN_OBJS) | $(LIB_DIR)
 $(PERC_LIB): $(PERC_OBJS) | $(LIB_DIR)
 	$(AR) rcs $@ $^
 
+$(SVM_LIB): $(SVM_OBJS) | $(LIB_DIR)
+	$(AR) rcs $@ $^
+
 $(TEST_BIN): $(TEST_OBJS) $(MODEL_LIBS) $(LIB) | $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $(TEST_OBJS) $(MODEL_LIBS) $(LIB) $(LDFLAGS)
 
