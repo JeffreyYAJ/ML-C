@@ -57,6 +57,13 @@ void test_perc_invalid_labels(void);
 void test_perc_not_fitted(void);
 void test_perc_predict_dim_mismatch(void);
 
+void test_svm_init_and_free(void);
+void test_svm_fit_1d_separable(void);
+void test_svm_fit_and_gate(void);
+void test_svm_invalid_labels(void);
+void test_svm_not_fitted(void);
+void test_svm_predict_dim_mismatch(void);
+
 static test_case_t g_tests[] = {
     {"status_str_ok", test_status_str_ok},
     {"status_str_null_ptr", test_status_str_null_ptr},

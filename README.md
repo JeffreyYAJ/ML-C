@@ -10,7 +10,7 @@ Implement the following algorithms (in progress):
 - Logistic Regression — **done** (batch gradient descent, binary classification)
 - k-Nearest Neighbors (KNN) — **done** (classification + regression, Euclidean distance)
 - Perceptron — **done** (Rosenblatt rule, binary linear classification)
-- Support Vector Machine (Linear SVM)
+- Support Vector Machine (Linear SVM) — **done** (hinge loss, L2 regularization)
 
 Future versions may add Decision Trees, Random Forests, Naive Bayes, PCA, and K-Means.
 

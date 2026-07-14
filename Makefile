@@ -43,7 +43,11 @@ PERC_SRCS := models/perceptron/perceptron.c
 PERC_OBJS := $(OBJ_DIR)/perceptron.o
 PERC_LIB  := $(LIB_DIR)/libyaj_ml_perceptron.a
 
-MODEL_LIBS := $(PERC_LIB) $(KNN_LIB) $(LOGREG_LIB) $(LR_LIB)
+SVM_SRCS := models/svm/svm.c
+SVM_OBJS := $(OBJ_DIR)/svm.o
+SVM_LIB  := $(LIB_DIR)/libyaj_ml_svm.a
+
+MODEL_LIBS := $(SVM_LIB) $(PERC_LIB) $(KNN_LIB) $(LOGREG_LIB) $(LR_LIB)
 
 # --- sources des tests ---
 TEST_SRCS := tests/test_main.c tests/test_error.c \
@@ -51,7 +55,8 @@ TEST_SRCS := tests/test_main.c tests/test_error.c \
              tests/test_linear_regression.c \
              tests/test_logistic_regression.c \
              tests/test_knn.c \
-             tests/test_perceptron.c
+             tests/test_perceptron.c \
+             tests/test_svm.c
 TEST_OBJS := $(TEST_SRCS:tests/%.c=$(OBJ_DIR)/test_%.o)
 TEST_BIN  := $(BIN_DIR)/test_runner
 

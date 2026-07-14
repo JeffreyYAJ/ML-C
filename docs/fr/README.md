@@ -15,6 +15,7 @@ Bienvenue dans la documentation pédagogique de **YAJ-ML**. Ces guides expliquen
 | 7 | [Régression logistique](07_logistic_regression.md) | Classification binaire, sigmoïde, BCE |
 | 8 | [k-Nearest Neighbors](08_knn.md) | Classification et régression par vote / moyenne |
 | 9 | [Perceptron](09_perceptron.md) | Classification linéaire, règle de Rosenblatt |
+| 10 | [SVM linéaire](10_svm.md) | Marge maximale, hinge loss, gradient descent |
 
 ## Compilation rapide
 
